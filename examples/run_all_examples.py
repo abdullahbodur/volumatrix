@@ -15,7 +15,7 @@ from pathlib import Path
 def run_example(example_path):
   """Run a single example and return success status."""
   print(f"\n{'=' * 60}")
-  print(f"🚀 Running: {example_path.name}")
+  print(f"Running: {example_path.name}")
   print(f"{'=' * 60}")
 
   try:
@@ -28,17 +28,17 @@ def run_example(example_path):
     end_time = time.time()
 
     print(
-      f"\n✅ {example_path.name} completed successfully in {end_time - start_time:.2f}s")
+      f"\n{example_path.name} completed successfully in {end_time - start_time:.2f}s")
     return True
 
   except Exception as e:
-    print(f"\n❌ {example_path.name} failed with error: {e}")
+    print(f"\n{example_path.name} failed with error: {e}")
     return False
 
 
 def main():
   """Run all examples in the examples directory."""
-  print("🎯 Volumatrix - Running All Examples")
+  print("Volumatrix - Running All Examples")
   print("=" * 60)
 
   # Get the examples directory
@@ -67,7 +67,7 @@ def main():
       success = run_example(example_path)
       results[example_name] = success
     else:
-      print(f"⚠️  Example not found: {example_name}")
+      print(f"Example not found: {example_name}")
       results[example_name] = False
 
   total_end_time = time.time()
@@ -75,26 +75,25 @@ def main():
 
   # Print summary
   print(f"\n{'=' * 60}")
-  print("📊 SUMMARY")
+  print("SUMMARY")
   print(f"{'=' * 60}")
 
   successful = sum(results.values())
   total = len(results)
 
-  print(f"✅ Successful: {successful}/{total}")
-  print(f"⏱️  Total time: {total_time:.2f} seconds")
-  print(f"📈 Success rate: {successful / total * 100:.1f}%")
+  print(f"Successful: {successful}/{total}")
+  print(f"Total time: {total_time:.2f} seconds")
+  print(f"Success rate: {successful / total * 100:.1f}%")
 
-  print(f"\n📋 Detailed Results:")
+  print(f"\nDetailed Results:")
   for example_name, success in results.items():
-    status = "✅ PASS" if success else "❌ FAIL"
+    status = "PASS" if success else "FAIL"
     print(f"   {status} {example_name}")
 
   if successful == total:
-    print(f"\n🎉 All examples completed successfully!")
-    print("💡 You're ready to start using Volumatrix!")
+    print(f"\nAll examples completed successfully!")
   else:
-    print(f"\n⚠️  Some examples failed. Check the error messages above.")
+    print(f"\nSome examples failed. Check the error messages above.")
     sys.exit(1)
 
 

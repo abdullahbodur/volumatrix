@@ -27,19 +27,19 @@ logging.debug("This is a debug message")
 
 def basic_interactive_viewing():
   """Demonstrate basic interactive viewing of objects."""
-  print("🎯 Basic interactive viewing...")
+  print("Basic interactive viewing...")
 
   # Generate objects and view them interactively
-  print("✅ Generating cube...")
+  print("Generating cube...")
   cube = vm.generate("cube")
 
-  print("🖼️  Opening interactive window for cube...")
+  print("Opening interactive window for cube...")
   vm.show(cube)  # Opens interactive window
 
-  print("✅ Generating sphere...")
+  print("Generating sphere...")
   sphere = vm.generate("sphere")
 
-  print("🖼️  Opening interactive window for sphere...")
+  print("Opening interactive window for sphere...")
   vm.show(sphere)
 
   return cube, sphere
@@ -47,49 +47,49 @@ def basic_interactive_viewing():
 
 def visualization_backends():
   """Try different visualization backends."""
-  print("\n🎯 Testing different visualization backends...")
+  print("\nTesting different visualization backends...")
 
   # Generate a test object
   chair = vm.generate("chair")
-  print(f"✅ Generated chair: {chair.name}")
+  print(f"Generated chair: {chair.name}")
 
   # Try PyVista (best interactive experience)
   try:
-    print("🖼️  Opening with PyVista (recommended)...")
+    print("Opening with PyVista (recommended)...")
     vm.preview(chair, backend="pyvista", window_title="PyVista Viewer")
     time.sleep(1)  # Brief pause between windows
   except Exception as e:
-    print(f"⚠️  PyVista not available: {e}")
+    print(f"PyVista not available: {e}")
 
   # Try Plotly (web-based interactive)
   try:
-    print("🖼️  Opening with Plotly...")
+    print("Opening with Plotly...")
     vm.preview(chair, backend="plotly", window_title="Plotly Viewer")
     time.sleep(1)
   except Exception as e:
-    print(f"⚠️  Plotly not available: {e}")
+    print(f"Plotly not available: {e}")
 
   # Try Trimesh (simple but effefferent visualization bactive)
   try:
-    print("🖼️  Opening with Trimeshng different visualization backen...")
+    print("Opening with Trimesh...")
     vm.preview(chair, backend="trimesh", window_title="Trimesh Viewer")
     time.sleep(1)
   except Exception as e:
-    print(f"⚠️  Trimesh not available: {e}")
+    print(f"Trimesh not available: {e}")
 
   # Try Matplotlib (basic 3D)
   try:
-    print("🖼️  Opening with Matplotlib...")
+    print("Opening with Matplotlib...")
     vm.preview(chair, backend="matplotlib", window_title="Matplotlib Viewer")
   except Exception as e:
-    print(f"⚠️  Matplotlib not available: {e}")
+    print(f"Matplotlib not available: {e}")
 
   return chair
 
 
 def scene_visualization():
   """Demonstrate interactive scene visualization."""
-  print("\n🎯 Interactive scene visualization...")
+  print("\nInteractive scene visualization...")
 
   # Create a scene with multiple objects
   scene = vm.Scene(name="InteractiveDemo")
@@ -103,10 +103,10 @@ def scene_visualization():
   scene.add(sphere, name="Sphere", position=[3, 0, 0])
   scene.add(cylinder, name="Cylinder", position=[0, 3, 0])
 
-  print(f"✅ Created scene with {len(scene)} objects")
+  print(f"Created scene with {len(scene)} objects")
 
   # Visualize the entire scene
-  print("🖼️  Opening interactive scene viewer...")
+  print("Opening interactive scene viewer...")
   vm.show(scene, window_title="Interactive Scene")
 
   return scene
@@ -114,21 +114,21 @@ def scene_visualization():
 
 def different_representations():
   """Show objects with different 3D representations."""
-  print("\n🎯 Visualizing different representations...")
+  print("\nVisualizing different representations...")
 
   # Start with a mesh
   original = vm.generate("table", output_format="mesh")
-  print("🖼️  Viewing original mesh...")
+  print("Viewing original mesh...")
   vm.show(original, window_title="Mesh Representation")
 
   # Convert to point cloud
   pc_version = vm.mesh_to_pointcloud(original, num_points=1000)
-  print("🖼️  Viewing as point cloud...")
+  print("Viewing as point cloud...")
   vm.show(pc_version, window_title="Point Cloud Representation")
 
   # Convert to voxels
   voxel_version = vm.voxelize(original, resolution=16)
-  print("🖼️  Viewing as voxels...")
+  print("Viewing as voxels...")
   vm.show(voxel_version, window_title="Voxel Representation")
 
   return original, pc_version, voxel_version
@@ -136,24 +136,24 @@ def different_representations():
 
 def transformation_visualization():
   """Visualize objects undergoing transformations."""
-  print("\n🎯 Transformation visualization...")
+  print("\nTransformation visualization...")
 
   # Generate base object
   lamp = vm.generate("lamp")
-  print("🖼️  Original lamp...")
+  print("Original lamp...")
   vm.show(lamp, window_title="Original Lamp")
 
   # Apply and visualize transformations
   normalized = vm.normalize(lamp)
-  print("🖼️  Normalized lamp...")
+  print("Normalized lamp...")
   vm.show(normalized, window_title="Normalized Lamp")
 
   scaled = vm.rescale(lamp, 2.0)
-  print("🖼️  Scaled lamp (2x)...")
+  print("Scaled lamp (2x)...")
   vm.show(scaled, window_title="Scaled Lamp")
 
   rotated = vm.rotate(lamp, [0, 0, 3.14159 / 4])  # 45 degrees
-  print("🖼️  Rotated lamp (45°)...")
+  print("Rotated lamp (45°)...")
   vm.show(rotated, window_title="Rotated Lamp")
 
   return lamp, normalized, scaled, rotated
@@ -161,17 +161,17 @@ def transformation_visualization():
 
 def batch_visualization():
   """Visualize multiple objects from batch generation."""
-  print("\n🎯 Batch visualization...")
+  print("\nBatch visualization...")
 
   # Generate multiple objects
   prompts = ["cube", "sphere", "cylinder", "chair"]
   objects = vm.generate_batch(prompts)
 
-  print(f"✅ Generated {len(objects)} objects")
+  print(f"Generated {len(objects)} objects")
 
   # Visualize each object individually
   for prompt, obj in zip(prompts, objects):
-    print(f"🖼️  Viewing {prompt}...")
+    print(f"Viewing {prompt}...")
     vm.show(obj, window_title=f"Batch Object: {prompt.title()}")
     time.sleep(0.5)  # Brief pause between windows
 
@@ -180,7 +180,7 @@ def batch_visualization():
   for i, (prompt, obj) in enumerate(zip(prompts, objects)):
     batch_scene.add(obj, name=prompt.title(), position=[i * 2, 0, 0])
 
-  print("🖼️  Viewing all objects in one scene...")
+  print("Viewing all objects in one scene...")
   vm.show(batch_scene, window_title="Batch Scene")
 
   return objects, batch_scene
@@ -188,14 +188,14 @@ def batch_visualization():
 
 def custom_visualization_options():
   """Demonstrate custom visualization options."""
-  print("\n🎯 Custom visualization options...")
+  print("\nCustom visualization options...")
 
   # Generate object
   vase = vm.generate("vase")
 
   # PyVista with custom options
   try:
-    print("🖼️  Custom PyVista visualization...")
+    print("Custom PyVista visualization...")
     vm.preview(vase,
                backend="pyvista",
                window_title="Custom Vase Viewer",
@@ -204,34 +204,34 @@ def custom_visualization_options():
                show_axes=True,
                show_grid=True)
   except Exception as e:
-    print(f"⚠️  Custom PyVista not available: {e}")
+    print(f"Custom PyVista not available: {e}")
 
   # Plotly with custom size
   try:
-    print("🖼️  Custom Plotly visualization...")
+    print("Custom Plotly visualization...")
     vm.preview(vase,
                backend="plotly",
                window_title="Custom Vase (Plotly)",
                window_size=(900, 700))
   except Exception as e:
-    print(f"⚠️  Custom Plotly not available: {e}")
+    print(f"Custom Plotly not available: {e}")
 
   return vase
 
 
 def auto_backend_selection():
   """Demonstrate automatic backend selection."""
-  print("\n🎯 Automatic backend selection...")
+  print("\nAutomatic backend selection...")
 
   # Generate object
   bookshelf = vm.generate("bookshelf")
 
   # Let Volumatrix choose the best available backend
-  print("🖼️  Using automatic backend selection...")
+  print("Using automatic backend selection...")
   vm.show(bookshelf)  # Will use the best available backend
 
   # You can also use vm.preview() with backend="auto"
-  print("🖼️  Explicit auto backend...")
+  print("Explicit auto backend...")
   vm.preview(bookshelf, backend="auto", window_title="Auto Backend Selection")
 
   return bookshelf
@@ -239,9 +239,9 @@ def auto_backend_selection():
 
 def main():
   """Run all interactive visualization examples."""
-  print("🚀 Volumatrix Interactive Visualization Examples")
+  print("Volumatrix Interactive Visualization Examples")
   print("=" * 50)
-  print("💡 Note: Multiple windows will open - close them to continue")
+  print("Note: Multiple windows will open - close them to continue")
   print("=" * 50)
 
   try:
@@ -269,16 +269,10 @@ def main():
     # Auto backend
     bookshelf = auto_backend_selection()
 
-    print("\n🎉 All interactive visualization examples completed!")
-    print("💡 Tips:")
-    print("   - Use vm.show(obj) for quick viewing")
-    print("   - Use vm.preview(obj, backend='pyvista') for best quality")
-    print("   - PyVista provides the best interactive experience")
-    print("   - Plotly works great for web-based viewing")
-    print("   - Scenes can contain multiple objects")
+    print("\nAll interactive visualization examples completed!")
 
   except Exception as e:
-    print(f"❌ Error running examples: {e}")
+    print(f"Error running examples: {e}")
     raise
 
 

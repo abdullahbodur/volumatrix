@@ -5,6 +5,7 @@
 Volumatrix is a Python library that makes 3D model generation as accessible and fast as image generation, while maintaining Blender-grade versatility. Generate, manipulate, and export 3D objects using AI models with a simple, intuitive API.
 
 ## Features
+
 ### Generation
 - AI-driven 3D object generation
 - Multiple object representations (meshes, voxels, point clouds)
@@ -78,15 +79,15 @@ import volumatrix as vm
 
 # Generate and visualize with PyVista
 obj = vm.generate("cube")
-vm.show(obj, backend="pyvista")  # Interactive PyVista window
+vm.show(obj, backend="pyvista")
 
 # Generate and visualize with Plotly
 obj = vm.generate("sphere")
-vm.show(obj, backend="plotly")   # Web-based Plotly viewer
+vm.show(obj, backend="plotly")
 
 # Generate and visualize with Trimesh
 obj = vm.generate("cylinder")
-vm.show(obj, backend="trimesh")  # Simple Trimesh window
+vm.show(obj, backend="trimesh")
 ```
 
 ### Scene Management
@@ -104,9 +105,9 @@ scene.add(chair, position=(0, 0, 0))
 scene.add(table, position=(2, 0, 0), rotation=(0, 45, 0))
 
 # Visualize the scene with your preferred backend
-vm.show(scene, backend="pyvista")  # PyVista visualization
+vm.show(scene, backend="pyvista")
 # or
-vm.show(scene, backend="opengl")   # Built-in OpenGL renderer
+vm.show(scene, backend="opengl")
 ```
 
 ## Requirements

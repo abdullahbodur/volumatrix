@@ -13,268 +13,232 @@ import volumatrix as vm
 
 
 def basic_batch_generation():
-  """Generate multiple objects in batch."""
-  print("🎯 Basic batch generation...")
+  """Demonstrate basic batch generation."""
+  print("Basic batch generation...")
 
-  # Define prompts for batch generation
-  prompts = [
-      "cube", "sphere", "cylinder", "chair", "table",
-      "lamp", "vase", "bookshelf", "sofa", "bed"
-  ]
+  # Generate multiple objects at once
+  prompts = ["cube", "sphere", "cylinder", "chair", "table"]
+  print(f"Generating {len(prompts)} objects...")
 
-  print(f"✅ Generating {len(prompts)} objects...")
-  start_time = time.time()
-
-  # Generate all objects in batch
+  # Generate all objects
   objects = vm.generate_batch(prompts)
 
-  end_time = time.time()
-  generation_time = end_time - start_time
-
-  print(f"✅ Batch generation completed:")
-  print(f"   - Objects: {len(objects)}")
-  print(f"   - Time: {generation_time:.2f} seconds")
-  print(
-    f"   - Average: {generation_time / len(objects):.2f} seconds per object")
-
-  # Show details for each object
+  print(f"Batch generation completed:")
   for prompt, obj in zip(prompts, objects):
-    print(f"   - {prompt}: {obj.name} ({list(obj.representations.keys())})")
+    print(f"   - {prompt}: {obj.name}")
 
-  return objects, prompts
+  return objects
 
 
-def batch_with_seeds():
-  """Generate batch with reproducible seeds."""
-  print("\n🎯 Batch generation with seeds...")
+def batch_generation_with_seeds():
+  """Demonstrate batch generation with seeds."""
+  print("\nBatch generation with seeds...")
 
-  prompts = ["dragon", "castle", "tree", "car", "airplane"]
-  seeds = [42, 123, 456, 789, 101112]
+  # Generate same objects with specific seeds
+  prompts = ["dragon", "vase", "lamp"]
+  seeds = [42, 123, 456]
 
-  print(f"✅ Generating {len(prompts)} objects with specific seeds...")
-
-  # Generate with seeds
+  print(f"Generating {len(prompts)} objects with specific seeds...")
   objects = vm.generate_batch(prompts, seeds=seeds)
 
-  print(f"✅ Generated objects with seeds:")
+  print(f"Generated objects with seeds:")
   for prompt, seed, obj in zip(prompts, seeds, objects):
     print(f"   - {prompt} (seed {seed}): {obj.name}")
 
-  # Verify reproducibility by generating again
-  print(f"✅ Verifying reproducibility...")
-  objects2 = vm.generate_batch(prompts, seeds=seeds)
+  # Verify reproducibility
+  print(f"Verifying reproducibility...")
+  for prompt, seed in zip(prompts, seeds):
+    obj1 = vm.generate(prompt, seed=seed)
+    obj2 = vm.generate(prompt, seed=seed)
+    print(f"   - {prompt}: {obj1.name == obj2.name}")
 
-  matches = 0
-  for obj1, obj2 in zip(objects, objects2):
-    if obj1.name == obj2.name:
-      matches += 1
-
-  print(f"   - Matching names: {matches}/{len(objects)}")
-
-  return objects, objects2
+  return objects
 
 
 def batch_transformations():
-  """Apply transformations to multiple objects in batch."""
-  print("\n🎯 Batch transformations...")
+  """Demonstrate batch transformations."""
+  print("\nBatch transformations...")
 
   # Generate base objects
-  base_objects = vm.generate_batch(["cube", "sphere", "cylinder", "chair"])
-  print(f"✅ Generated {len(base_objects)} base objects")
+  base_objects = vm.generate_batch(["cube", "sphere", "cylinder"])
+  print(f"Generated {len(base_objects)} base objects")
 
-  # Apply different transformations to each
+  # Define transformations
   transformations = [
-      lambda obj: vm.normalize(obj),
-      lambda obj: vm.rescale(obj, 2.0),
-      lambda obj: vm.rotate(obj, [0, 0, 3.14159 / 4]),
-      lambda obj: vm.translate(obj, [1, 1, 1])
+      ("normalize", lambda x: vm.normalize(x)),
+      ("scale_2x", lambda x: vm.rescale(x, 2.0)),
+      ("rotate_45", lambda x: vm.rotate(x, [0, 0, 3.14159/4])),
+      ("translate", lambda x: vm.translate(x, [1, 1, 1]))
   ]
 
-  transformation_names = ["normalized",
-                          "scaled_2x", "rotated_45deg", "translated"]
+  # Apply transformations
+  print(f"Applying transformations...")
+  transformed_objects = {}
+  for name, transform in transformations:
+    transformed_objects[name] = [transform(obj) for obj in base_objects]
 
-  print(f"✅ Applying transformations...")
-  transformed_objects = []
-
-  for obj, transform, name in zip(base_objects, transformations, transformation_names):
-    start_time = time.time()
-    transformed = transform(obj)
-    end_time = time.time()
-
-    transformed_objects.append(transformed)
-    print(f"   - {name}: {end_time - start_time:.3f}s")
-
-  # Compare bounds before and after
-  print(f"✅ Transformation comparison:")
-  for i, (original, transformed, name) in enumerate(zip(base_objects, transformed_objects, transformation_names)):
-    orig_bounds = original.bounds()
-    trans_bounds = transformed.bounds()
-    print(f"   - Object {i} ({name}):")
-    print(f"     * Original bounds: {orig_bounds}")
-    print(f"     * Transformed bounds: {trans_bounds}")
+  # Compare results
+  print(f"Transformation comparison:")
+  for name, objects in transformed_objects.items():
+    print(f"   - {name}:")
+    for i, obj in enumerate(objects):
+      print(f"     * {base_objects[i].name} -> {obj.name}")
 
   return base_objects, transformed_objects
 
 
 def batch_conversions():
-  """Convert multiple objects between representations."""
-  print("\n🎯 Batch conversions...")
+  """Demonstrate batch conversions between representations."""
+  print("\nBatch conversions...")
 
-  # Generate objects with different initial formats
-  mesh_objects = vm.generate_batch(["sphere", "cube"], output_format="mesh")
-  voxel_objects = vm.generate_batch(
-    ["cylinder", "chair"], output_format="voxel", resolution=16)
-  pc_objects = vm.generate_batch(["table", "lamp"], output_format="pointcloud")
+  # Generate objects in different formats
+  mesh_objects = vm.generate_batch(["chair", "table", "lamp"],
+                                  output_format="mesh")
+  voxel_objects = vm.generate_batch(["cube", "sphere", "cylinder"],
+                                   output_format="voxel")
+  pc_objects = vm.generate_batch(["vase", "bookshelf", "dragon"],
+                                output_format="pointcloud")
 
   all_objects = mesh_objects + voxel_objects + pc_objects
-  object_types = ["mesh", "mesh", "voxel", "voxel", "pointcloud", "pointcloud"]
+  print(f"Generated {len(all_objects)} objects with different representations")
 
-  print(
-    f"✅ Generated {len(all_objects)} objects with different representations")
-
-  # Convert all to have mesh representation
-  print(f"✅ Converting all to mesh representation...")
+  # Convert all to mesh
+  print(f"Converting all to mesh representation...")
   mesh_converted = []
-
-  for obj, obj_type in zip(all_objects, object_types):
-    start_time = time.time()
-
-    if obj_type == "voxel" and not obj.has_representation("mesh"):
-      converted = vm.devoxelize(obj)
-    elif obj_type == "pointcloud" and not obj.has_representation("mesh"):
-      converted = vm.pointcloud_to_mesh(obj)
-    else:
-      converted = obj  # Already has mesh
-
-    end_time = time.time()
-    mesh_converted.append(converted)
-
-    print(f"   - {obj_type} → mesh: {end_time - start_time:.3f}s")
+  for obj in all_objects:
+    if obj.has_representation("mesh"):
+      mesh_converted.append(obj)
+    elif obj.has_representation("voxel"):
+      mesh_converted.append(vm.voxel_to_mesh(obj))
+    elif obj.has_representation("pointcloud"):
+      mesh_converted.append(vm.pointcloud_to_mesh(obj))
 
   # Add point cloud representation to all
-  print(f"✅ Adding point cloud representation to all...")
-  pc_added = []
-
+  print(f"Adding point cloud representation to all...")
+  pc_converted = []
   for obj in mesh_converted:
-    if not obj.has_representation("pointcloud"):
-      converted = vm.mesh_to_pointcloud(obj, num_points=500)
+    if obj.has_representation("pointcloud"):
+      pc_converted.append(obj)
     else:
-      converted = obj
-    pc_added.append(converted)
+      pc_converted.append(vm.mesh_to_pointcloud(obj))
 
   # Show final representations
-  print(f"✅ Final representations:")
-  for i, obj in enumerate(pc_added):
-    representations = list(obj.representations.keys())
-    print(f"   - Object {i}: {representations}")
+  print(f"Final representations:")
+  for i, (obj, pc) in enumerate(zip(mesh_converted, pc_converted)):
+    print(f"   - Object {i}:")
+    print(f"     * Mesh: {obj.mesh.num_vertices} vertices")
+    print(f"     * Point cloud: {pc.pointcloud.num_points} points")
 
-  return all_objects, mesh_converted, pc_added
+  return mesh_converted, pc_converted
 
 
 def batch_export():
-  """Export multiple objects in batch."""
-  print("\n🎯 Batch export...")
+  """Demonstrate batch export operations."""
+  print("\nBatch export...")
 
-  # Generate objects for export
-  furniture_prompts = ["chair", "table", "sofa", "bed", "desk", "lamp"]
-  furniture_objects = vm.generate_batch(furniture_prompts)
+  # Generate furniture objects
+  furniture_objects = vm.generate_batch([
+      "modern chair",
+      "coffee table",
+      "floor lamp",
+      "bookshelf",
+      "dining table"
+  ])
+  print(f"Generated {len(furniture_objects)} furniture objects")
 
-  print(f"✅ Generated {len(furniture_objects)} furniture objects")
+  # Create temporary directory for exports
+  temp_path = Path("temp_exports")
+  temp_path.mkdir(exist_ok=True)
+  print(f"Exporting to: {temp_path}")
 
-  with tempfile.TemporaryDirectory() as temp_dir:
-    temp_path = Path(temp_dir)
-    print(f"✅ Exporting to: {temp_path}")
+  # Export to different formats
+  export_formats = ["obj", "stl", "ply"]
+  export_results = {}
 
-    # Export all objects
-    start_time = time.time()
-    exported_files = []
+  for fmt in export_formats:
+    export_results[fmt] = []
+    for i, obj in enumerate(furniture_objects):
+      filename = temp_path / f"furniture_{i}.{fmt}"
+      vm.export(obj, filename)
+      export_results[fmt].append(filename)
 
-    for prompt, obj in zip(furniture_prompts, furniture_objects):
-      obj_file = temp_path / f"{prompt}.obj"
-      vm.export(obj, str(obj_file))
-      exported_files.append(obj_file)
+  print(f"Batch export completed:")
+  for fmt, files in export_results.items():
+    print(f"   - {fmt.upper()}: {len(files)} files")
 
-    end_time = time.time()
-    export_time = end_time - start_time
+  # Calculate total size
+  total_size = sum(f.stat().st_size for files in export_results.values()
+                  for f in files)
+  print(f"Total exported size: {total_size} bytes")
 
-    print(f"✅ Batch export completed:")
-    print(f"   - Files: {len(exported_files)}")
-    print(f"   - Time: {export_time:.2f} seconds")
-    print(
-      f"   - Average: {export_time / len(exported_files):.2f} seconds per file")
-
-    # Show file sizes
-    total_size = 0
-    for prompt, file_path in zip(furniture_prompts, exported_files):
-      file_size = file_path.stat().st_size
-      total_size += file_size
-      print(f"   - {prompt}: {file_size} bytes")
-
-    print(f"✅ Total exported size: {total_size} bytes")
-
-    return exported_files
+  return export_results
 
 
 def batch_scene_creation():
-  """Create multiple scenes with batch-generated objects."""
-  print("\n🎯 Batch scene creation...")
+  """Demonstrate batch scene creation."""
+  print("\nBatch scene creation...")
 
-  # Generate objects for different room types
-  living_room_objects = vm.generate_batch(
-    ["sofa", "coffee table", "tv stand", "lamp"])
-  bedroom_objects = vm.generate_batch(["bed", "nightstand", "dresser", "chair"])
-  kitchen_objects = vm.generate_batch(
-    ["dining table", "chair", "chair", "refrigerator"])
-
-  room_configs = [
+  # Define scene configurations
+  scene_configs = [
       {
           "name": "LivingRoom",
-          "objects": living_room_objects,
-          "names": ["Sofa", "CoffeeTable", "TVStand", "Lamp"],
-          "positions": [[0, 0, 0], [0, 2, 0], [0, 4, 0], [-2, 0, 0]]
+          "objects": [
+              ("sofa", [0, 0, 0]),
+              ("coffee table", [0, 2, 0]),
+              ("tv stand", [0, 4, 0]),
+              ("bookshelf", [-3, 0, 0]),
+              ("floor lamp", [-2, 2, 0])
+          ]
       },
       {
-          "name": "Bedroom",
-          "objects": bedroom_objects,
-          "names": ["Bed", "Nightstand", "Dresser", "Chair"],
-          "positions": [[0, 0, 0], [2, 0, 0], [0, 3, 0], [-2, 2, 0]]
+          "name": "DiningRoom",
+          "objects": [
+              ("dining table", [0, 0, 0]),
+              ("chair", [-1, -1, 0]),
+              ("chair", [1, -1, 0]),
+              ("chair", [-1, 1, 0]),
+              ("chair", [1, 1, 0])
+          ]
       },
       {
-          "name": "Kitchen",
-          "objects": kitchen_objects,
-          "names": ["DiningTable", "Chair1", "Chair2", "Refrigerator"],
-          "positions": [[0, 0, 0], [-1, -1, 0], [1, -1, 0], [3, 0, 0]]
+          "name": "Office",
+          "objects": [
+              ("desk", [0, 0, 0]),
+              ("office chair", [0, -1, 0]),
+              ("bookshelf", [3, 0, 0]),
+              ("lamp", [0, 0, 0.8]),
+              ("computer", [0, 0, 0.8])
+          ]
       }
   ]
 
+  # Create scenes
   scenes = []
-
-  for config in room_configs:
+  for config in scene_configs:
     scene = vm.Scene(name=config["name"])
-
-    for obj, name, position in zip(config["objects"], config["names"], config["positions"]):
-      scene.add(obj, name=name, position=position)
-
+    for prompt, position in config["objects"]:
+      obj = vm.generate(prompt)
+      scene.add(obj, position=position)
     scenes.append(scene)
-    print(f"✅ Created {config['name']} with {len(scene)} objects")
+    print(f"Created {config['name']} with {len(scene)} objects")
 
-  # Analyze all scenes
-  print(f"✅ Scene analysis:")
-  for scene in scenes:
-    bounds = scene.bounds()
-    print(f"   - {scene.name}: {len(scene)} objects, bounds {bounds}")
+    print(f"Scene analysis:")
+    print(f"   - Bounds: {scene.bounds()}")
+    print(f"   - Center: {scene.center()}")
 
   return scenes
 
 
 def performance_comparison():
-  """Compare performance of batch vs individual operations."""
-  print("\n🎯 Performance comparison...")
+  """Compare individual vs batch operations."""
+  print("\nPerformance comparison...")
 
-  prompts = ["cube", "sphere", "cylinder", "chair", "table"]
+  # Test objects
+  prompts = ["cube", "sphere", "cylinder", "chair", "table"] * 2
+  n_objects = len(prompts)
 
   # Individual generation
-  print(f"✅ Individual generation...")
+  print(f"Individual generation...")
   start_time = time.time()
   individual_objects = []
   for prompt in prompts:
@@ -283,57 +247,50 @@ def performance_comparison():
   individual_time = time.time() - start_time
 
   # Batch generation
-  print(f"✅ Batch generation...")
+  print(f"Batch generation...")
   start_time = time.time()
   batch_objects = vm.generate_batch(prompts)
   batch_time = time.time() - start_time
 
-  # Compare results
-  print(f"✅ Performance comparison:")
-  print(f"   - Individual: {individual_time:.2f} seconds")
-  print(f"   - Batch: {batch_time:.2f} seconds")
-  print(f"   - Speedup: {individual_time / batch_time:.2f}x")
-  print(f"   - Objects match: {len(individual_objects) == len(batch_objects)}")
+  print(f"Performance comparison:")
+  print(f"   - Individual: {individual_time:.2f}s for {n_objects} objects")
+  print(f"   - Batch: {batch_time:.2f}s for {n_objects} objects")
+  print(f"   - Speedup: {individual_time/batch_time:.1f}x")
 
-  return individual_objects, batch_objects, individual_time, batch_time
+  return individual_objects, batch_objects
 
 
 def main():
   """Run all batch processing examples."""
-  print("🚀 Volumatrix Batch Processing Examples")
+  print("Volumatrix Batch Processing Examples")
   print("=" * 50)
 
   try:
     # Basic batch generation
-    objects, prompts = basic_batch_generation()
+    basic_objects = basic_batch_generation()
 
-    # Batch with seeds
-    seeded_objects, seeded_objects2 = batch_with_seeds()
+    # Batch generation with seeds
+    seeded_objects = batch_generation_with_seeds()
 
     # Batch transformations
-    base_objs, transformed_objs = batch_transformations()
+    base_objects, transformed_objects = batch_transformations()
 
     # Batch conversions
-    orig_objs, mesh_objs, pc_objs = batch_conversions()
+    mesh_objects, pc_objects = batch_conversions()
 
     # Batch export
-    exported_files = batch_export()
+    export_results = batch_export()
 
     # Batch scene creation
     scenes = batch_scene_creation()
 
     # Performance comparison
-    individual, batch, ind_time, batch_time = performance_comparison()
+    individual_objects, batch_objects = performance_comparison()
 
-    print("\n🎉 All batch processing examples completed successfully!")
-    print("💡 Tips:")
-    print("   - Batch operations are more efficient than individual calls")
-    print("   - Use seeds for reproducible batch generation")
-    print("   - Combine batch generation with transformations and exports")
-    print("   - Batch processing is ideal for creating datasets")
+    print("\nAll batch processing examples completed successfully!")
 
   except Exception as e:
-    print(f"❌ Error running examples: {e}")
+    print(f"Error running examples: {e}")
     raise
 
 

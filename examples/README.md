@@ -2,9 +2,9 @@
 
 This directory contains practical examples demonstrating how to use the Volumatrix library for 3D object generation, manipulation, and export. Each example is self-contained and can be run independently.
 
-## 📁 Example Files
+## Example Files
 
-### 🎯 [basic_generation.py](basic_generation.py)
+### [basic_generation.py](basic_generation.py)
 **Learn the fundamentals of 3D object generation**
 
 - Generate simple geometric shapes (cube, sphere, cylinder)
@@ -16,7 +16,7 @@ This directory contains practical examples demonstrating how to use the Volumatr
 python examples/basic_generation.py
 ```
 
-### 🔄 [transformations.py](transformations.py)
+### [transformations.py](transformations.py)
 **Master object transformations and manipulations**
 
 - Basic transformations (normalize, scale, rotate, translate)
@@ -28,7 +28,7 @@ python examples/basic_generation.py
 python examples/transformations.py
 ```
 
-### 🔀 [conversions.py](conversions.py)
+### [conversions.py](conversions.py)
 **Convert between different 3D representations**
 
 - Convert meshes to point clouds and voxels
@@ -41,7 +41,7 @@ python examples/transformations.py
 python examples/conversions.py
 ```
 
-### 🎬 [scene_management.py](scene_management.py)
+### [scene_management.py](scene_management.py)
 **Work with scenes and multiple objects**
 
 - Create and manage scenes
@@ -54,7 +54,7 @@ python examples/conversions.py
 python examples/scene_management.py
 ```
 
-### 💾 [export_formats.py](export_formats.py)
+### [export_formats.py](export_formats.py)
 **Export objects to various file formats**
 
 - Export to OBJ, STL, PLY formats
@@ -67,7 +67,7 @@ python examples/scene_management.py
 python examples/export_formats.py
 ```
 
-### ⚡ [batch_processing.py](batch_processing.py)
+### [batch_processing.py](batch_processing.py)
 **Efficiently process multiple objects**
 
 - Batch generation with and without seeds
@@ -80,7 +80,7 @@ python examples/export_formats.py
 python examples/batch_processing.py
 ```
 
-### 🖼️ [interactive_visualization.py](interactive_visualization.py)
+### [interactive_visualization.py](interactive_visualization.py)
 **Real-time interactive 3D visualization**
 
 - Interactive windowed viewing of 3D objects
@@ -93,7 +93,7 @@ python examples/batch_processing.py
 python examples/interactive_visualization.py
 ```
 
-### 🎯 [run_all_examples.py](run_all_examples.py)
+### [run_all_examples.py](run_all_examples.py)
 **Run all examples in sequence**
 
 - Execute all examples in the recommended learning order
@@ -104,7 +104,7 @@ python examples/interactive_visualization.py
 python examples/run_all_examples.py
 ```
 
-## 🚀 Quick Start
+## Quick Start
 
 1. **Install Volumatrix** (if not already installed):
    ```bash
@@ -123,7 +123,7 @@ python examples/run_all_examples.py
 
 4. **Explore the code** to understand how each feature works
 
-## 📚 Learning Path
+## Learning Path
 
 We recommend following this order when learning Volumatrix:
 
@@ -134,7 +134,7 @@ We recommend following this order when learning Volumatrix:
 5. **Export your work**: `export_formats.py`
 6. **Scale up**: `batch_processing.py`
 
-## 🎯 Common Use Cases
+## Common Use Cases
 
 ### Generate a simple object
 ```python
@@ -170,7 +170,7 @@ vm.export(cube, "my_cube.obj")
 objects = vm.generate_batch(["cube", "sphere", "cylinder"])
 ```
 
-## 🔧 Customization
+## Customization
 
 Each example can be easily modified to suit your needs:
 
@@ -179,7 +179,7 @@ Each example can be easily modified to suit your needs:
 - **Add new transformations**: Combine existing operations in new ways
 - **Export different formats**: Try different file formats for your use case
 
-## 🐛 Troubleshooting
+## Troubleshooting
 
 If you encounter issues:
 
@@ -188,7 +188,7 @@ If you encounter issues:
 3. **Check file paths**: Ensure you have write permissions for export operations
 4. **Review error messages**: Most errors include helpful information
 
-## 💡 Tips
+## Tips
 
 - **Start simple**: Begin with basic examples before moving to complex workflows
 - **Experiment**: Modify parameters to see how they affect the results
@@ -196,13 +196,13 @@ If you encounter issues:
 - **Use batch operations**: They're more efficient for processing multiple objects
 - **Save your work**: Export objects you want to keep for later use
 
-## 📖 Additional Resources
+## Additional Resources
 
 - **Main Documentation**: See the project README for comprehensive documentation
 - **API Reference**: Check the source code for detailed function documentation
 - **Tests**: Look at the `tests/` directory for more usage examples
 
-## 🤝 Contributing
+## Contributing
 
 Found a bug or want to add a new example? Contributions are welcome! Please:
 
@@ -213,4 +213,4 @@ Found a bug or want to add a new example? Contributions are welcome! Please:
 
 ---
 
-Happy 3D modeling with Volumatrix! 🎨✨ 
+Happy 3D modeling with Volumatrix! 
