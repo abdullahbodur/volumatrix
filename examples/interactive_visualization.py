@@ -9,6 +9,20 @@ or when explicitly previewed.
 
 import time
 import volumatrix as vm
+import os
+import logging
+
+# Get the DEBUG environment variable
+debug_level = int(os.getenv('DEBUG', 0))
+
+# Configure logging based on the DEBUG level
+if debug_level >= 5:
+    logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+else:
+    logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+
+# Example debug log
+logging.debug("This is a debug message")
 
 
 def basic_interactive_viewing():
@@ -55,9 +69,9 @@ def visualization_backends():
   except Exception as e:
     print(f"⚠️  Plotly not available: {e}")
 
-  # Try Trimesh (simple but effective)
+  # Try Trimesh (simple but effefferent visualization bactive)
   try:
-    print("🖼️  Opening with Trimesh...")
+    print("🖼️  Opening with Trimeshng different visualization backen...")
     vm.preview(chair, backend="trimesh", window_title="Trimesh Viewer")
     time.sleep(1)
   except Exception as e:
