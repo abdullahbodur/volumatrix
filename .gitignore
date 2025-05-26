@@ -1,0 +1,145 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual Environment
+venv/
+env/
+ENV/
+.env
+.venv
+env.bak/
+venv.bak/
+
+# IDE - VSCode
+.vscode/
+*.code-workspace
+.history
+
+# IDE - PyCharm
+.idea/
+*.iml
+*.iws
+*.ipr
+.idea_modules/
+
+# IDE - Jupyter Notebook
+.ipynb_checkpoints
+*.ipynb
+
+# Testing
+.coverage
+htmlcov/
+.pytest_cache/
+.tox/
+coverage.xml
+*.cover
+.hypothesis/
+
+# Distribution / packaging
+.Python
+env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Logs and databases
+*.log
+*.sqlite
+*.db
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Project specific
+*.obj
+*.stl
+*.ply
+*.glb
+*.gltf
+*.fbx
+*.3ds
+*.blend
+*.blend1
+*.mtl
+*.dae
+*.bvh
+*.abc
+*.usd
+*.usda
+*.usdc
+*.usdz
+
+# Temporary files
+*.swp
+*.swo
+*~
+*.bak
+*.tmp
+*.temp
+
+# Documentation
+docs/_build/
+site/
+
+# Cache directories
+.cache/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Local development settings
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Dependencies
+node_modules/
+jspm_packages/
+bower_components/
+
+# Large media files
+*.mp4
+*.tiff
+*.avi
+*.flv
+*.mov
+*.wmv 

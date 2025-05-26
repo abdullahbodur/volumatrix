@@ -1,0 +1,24 @@
+# Volumatrix Requirements
+# AI-native 3D object generation library
+
+# Core dependencies
+numpy>=2.0.0
+scipy>=1.15.0
+
+# 3D Processing and Visualization
+trimesh>=4.6.0
+pyvista>=0.45.0
+plotly>=6.1.0
+pyglet>=1.5.0,<2.0  # For windowed viewing compatibility
+vtk>=9.4.0
+matplotlib>=3.10.0
+
+# Data handling and validation  
+pydantic>=2.11.0
+
+# Utilities
+tqdm>=4.67.0
+
+# Development and testing (optional)
+pytest>=8.3.0
+pytest-cov>=6.1.0 

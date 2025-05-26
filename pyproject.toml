@@ -1,0 +1,138 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "volumatrix"
+version = "0.1.0"
+description = "AI-Native 3D Object Generation Library"
+readme = "README.md"
+license = {text = "MIT"}
+authors = [
+    {name = "Volumatrix Team", email = "team@volumatrix.ai"}
+]
+maintainers = [
+    {name = "Volumatrix Team", email = "team@volumatrix.ai"}
+]
+keywords = ["3d", "ai", "generation", "mesh", "voxel", "point-cloud", "blender"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Multimedia :: Graphics :: 3D Modeling",
+]
+requires-python = ">=3.10"
+dependencies = [
+    "numpy>=1.21.0",
+    "trimesh>=3.15.0",
+    "scipy>=1.7.0",
+    "pillow>=8.0.0",
+    "tqdm>=4.60.0",
+    "pydantic>=2.0.0",
+    "click>=8.0.0",
+    "rich>=12.0.0",
+    "httpx>=0.24.0",
+]
+
+[project.optional-dependencies]
+torch = [
+    "torch>=2.0.0",
+    "torchvision>=0.15.0",
+]
+tensorflow = [
+    "tensorflow>=2.12.0",
+]
+rendering = [
+    "pythreejs>=2.4.0",
+    "jupyter>=1.0.0",
+    "ipywidgets>=8.0.0",
+    "matplotlib>=3.5.0",
+]
+blender = [
+    "bpy>=3.6.0",
+]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+    "black>=23.0.0",
+    "isort>=5.12.0",
+    "flake8>=6.0.0",
+    "mypy>=1.0.0",
+    "pre-commit>=3.0.0",
+    "sphinx>=6.0.0",
+    "sphinx-rtd-theme>=1.2.0",
+]
+all = [
+    "volumatrix[torch,rendering,blender,dev]"
+]
+
+[project.urls]
+Homepage = "https://github.com/volumatrix/volumatrix"
+Documentation = "https://volumatrix.readthedocs.io"
+Repository = "https://github.com/volumatrix/volumatrix"
+"Bug Tracker" = "https://github.com/volumatrix/volumatrix/issues"
+
+[project.scripts]
+volumatrix = "volumatrix.cli.main:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["volumatrix*"]
+
+[tool.black]
+line-length = 88
+target-version = ['py310']
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+  # directories
+  \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | build
+  | dist
+)/
+'''
+
+[tool.isort]
+profile = "black"
+multi_line_output = 3
+line_length = 88
+known_first_party = ["volumatrix"]
+
+[tool.mypy]
+python_version = "3.10"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+disallow_untyped_decorators = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_no_return = true
+warn_unreachable = true
+strict_equality = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = [
+    "--cov=volumatrix",
+    "--cov-report=term-missing",
+    "--cov-report=html",
+    "--cov-report=xml",
+] 
