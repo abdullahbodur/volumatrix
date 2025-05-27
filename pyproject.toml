@@ -14,7 +14,7 @@ authors = [
 maintainers = [
     {name = "Volumatrix Team", email = "team@volumatrix.ai"}
 ]
-keywords = ["3d", "ai", "generation", "mesh", "voxel", "point-cloud", "blender"]
+keywords = ["3d", "ai", "generation", "mesh", "voxel", "point-cloud"]
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Intended Audience :: Developers",
@@ -55,9 +55,6 @@ rendering = [
     "ipywidgets>=8.0.0",
     "matplotlib>=3.5.0",
 ]
-blender = [
-    "bpy>=3.6.0",
-]
 dev = [
     "pytest>=7.0.0",
     "pytest-cov>=4.0.0",
@@ -70,7 +67,7 @@ dev = [
     "sphinx-rtd-theme>=1.2.0",
 ]
 all = [
-    "volumatrix[torch,rendering,blender,dev]"
+    "volumatrix[torch,rendering,dev]"
 ]
 
 [project.urls]

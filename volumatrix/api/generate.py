@@ -5,7 +5,7 @@ This module provides the main user-facing functions for generating 3D objects
 using AI models.
 """
 
-import logging
+import logging as log
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from typing import Dict, List, Optional
 
@@ -14,8 +14,7 @@ from tqdm import tqdm
 from ..core.object import VolumatrixObject
 from ..models.registry import get_model, list_models
 
-log = logging.getLogger(__name__)
-
+log.basicConfig(level=log.DEBUG, format="%(asctime)s - %(levelname)s - %(message)s")
 
 def generate(
     prompt: str,
@@ -80,7 +79,7 @@ def generate(
 
         # Generate the object
         result = model_instance.generate(**generation_params)
-
+        log.debug(f"Generated object: {result}")
         if not isinstance(result, VolumatrixObject):
             raise TypeError(f"Model returned {type(result)}, expected VolumatrixObject")
 

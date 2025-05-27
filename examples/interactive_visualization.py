@@ -8,13 +8,10 @@ or when explicitly previewed.
 """
 
 import time
-
-from logger import setup_logger
-
+import logging as log
 import volumatrix as vm
 
-log = setup_logger(__name__)
-
+log.basicConfig(level=log.DEBUG, format="%(asctime)s - %(levelname)s - %(message)s")
 
 def basic_interactive_viewing():
     """Demonstrate basic interactive viewing of objects."""

@@ -6,10 +6,8 @@ using Volumatrix. Learn about different export options and file formats.
 """
 import tempfile
 from pathlib import Path
-
-from logger import setup_logger
-
 import volumatrix as vm
+from logger import setup_logger
 
 log = setup_logger(__name__)
 

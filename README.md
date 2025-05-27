@@ -30,7 +30,6 @@ Volumatrix is a Python library that makes 3D model generation as accessible and 
    - PyVista
    - Plotly
    - Trimesh
-   - Blender integration
 
 ## Installation
 

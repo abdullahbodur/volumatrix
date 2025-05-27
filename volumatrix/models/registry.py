@@ -126,12 +126,16 @@ def get_model(name: Optional[str] = None) -> Optional[BaseModel]:
         >>> default_model = get_model()  # Gets default model
     """
     with _registry_lock:
+        log.debug(f"Getting model: {name}")
         if name is None:
-            name = _default_model
+          log.debug(f"No name provided, using default model: {_default_model}")
+          name = _default_model
 
         if name is None:
-            return None
+          log.debug("No name provided, returning None")
+          return None
 
+        log.debug(f"Returning model: {name}")
         return _model_registry.get(name)
 
 
