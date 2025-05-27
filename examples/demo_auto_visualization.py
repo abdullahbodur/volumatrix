@@ -1,51 +1,48 @@
 #!/usr/bin/env python3
 """
-Demo: Automatic 3D Visualization in Volumatrix
+Auto-Visualization Demo
 
-This script demonstrates how Volumatrix can automatically open 
-interactive 3D windows when generating objects.
+This example demonstrates the automatic visualization capabilities of Volumatrix.
 """
+
+from logger import setup_logger
 
 import volumatrix as vm
 
+log = setup_logger(__name__)
+
 
 def main():
-  print("Volumatrix Auto-Visualization Demo")
-  print("=" * 50)
-
-  # Method 1: Generate with auto-preview
-  print("Method 1: Auto-preview with generate()")
-  print("Generating cube with automatic visualization...")
-  cube = vm.generate("cube", auto_preview=True)
-  print(f"Generated: {cube.name}")
-
-  # Method 2: Convenience function
-  print("\nMethod 2: Using generate_and_show()")
-  print("Generating sphere with automatic visualization...")
-  sphere = vm.generate_and_show("sphere")
-  print(f"Generated: {sphere.name}")
-
-  # Method 3: Manual visualization
-  print("\nMethod 3: Manual visualization with show()")
-  print("Generating cylinder and then showing it...")
-  cylinder = vm.generate("cylinder")
-  vm.show(cylinder)  # Manually show
-  print(f"Generated and showed: {cylinder.name}")
-
-  # Method 4: Scene visualization
-  print("\nMethod 4: Scene visualization")
-  print("Creating a scene with multiple objects...")
-  scene = vm.Scene(name="AutoVisualizationDemo")
-  scene.add(cube, name="Cube", position=[0, 0, 0])
-  scene.add(sphere, name="Sphere", position=[2, 0, 0])
-  scene.add(cylinder, name="Cylinder", position=[0, 2, 0])
-
-  print(f"Scene created with {len(scene)} objects")
-  vm.show(scene)  # Show the entire scene
-  print("Scene visualization opened!")
-
-  print("\nDemo Complete!")
+    """Run the auto-visualization demo."""
+    log.info("Starting Volumatrix Auto-Visualization Demo")
+    log.info("=" * 50)
+    # Method 1: Auto-preview with generate()
+    log.info("Method 1: Auto-preview with generate()")
+    log.debug("Generating cube with automatic visualization...")
+    cube = vm.generate("cube")
+    log.debug(f"Generated: {cube.name}")
+    # Method 2: Using generate_and_show()
+    log.info("Method 2: Using generate_and_show()")
+    log.debug("Generating sphere with automatic visualization...")
+    sphere = vm.generate_and_show("sphere")
+    log.debug(f"Generated: {sphere.name}")
+    # Method 3: Manual visualization with show()
+    log.info("Method 3: Manual visualization with show()")
+    log.debug("Generating cylinder and then showing it...")
+    cylinder = vm.generate("cylinder")
+    vm.show(cylinder)
+    log.debug(f"Generated and showed: {cylinder.name}")
+    # Method 4: Scene visualization
+    log.info("Method 4: Scene visualization")
+    log.debug("Creating a scene with multiple objects...")
+    scene = vm.Scene(name="AutoVizDemo")
+    scene.add(cube, name="Cube", position=[0, 0, 0])
+    scene.add(sphere, name="Sphere", position=[3, 0, 0])
+    scene.add(cylinder, name="Cylinder", position=[0, 3, 0])
+    log.debug(f"Scene created with {len(scene)} objects")
+    vm.show(scene)
+    log.info("Auto-visualization demo completed successfully!")
 
 
 if __name__ == "__main__":
-  main()
+    main()

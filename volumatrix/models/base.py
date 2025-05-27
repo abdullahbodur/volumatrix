@@ -6,227 +6,225 @@ must implement to be compatible with Volumatrix.
 """
 
 from abc import ABC, abstractmethod
-from typing import Any, Dict, List, Optional, Union
-import numpy as np
-from pydantic import BaseModel as PydanticBaseModel, Field
+from typing import Any, Dict, List, Optional
+
+from pydantic import BaseModel as PydanticBaseModel
+from pydantic import Field
 
 from ..core.object import VolumatrixObject
 
 
 class ModelConfig(PydanticBaseModel):
-  """Configuration for a model."""
+    """Configuration for a model."""
 
-  name: str = Field(..., description="Model name")
-  description: str = Field(default="", description="Model description")
-  version: str = Field(default="1.0.0", description="Model version")
-  supported_formats: List[str] = Field(
-      default=["mesh"],
-      description="Supported output formats"
-  )
-  max_resolution: int = Field(
-    default=256, description="Maximum output resolution")
-  requires_gpu: bool = Field(
-    default=False, description="Whether model requires GPU")
-  model_type: str = Field(
-    default="unknown", description="Type of model (diffusion, vae, etc.)")
-  parameters: Dict[str, Any] = Field(
-      default_factory=dict,
-      description="Model-specific parameters"
-  )
+    name: str = Field(..., description="Model name")
+    description: str = Field(default="", description="Model description")
+    version: str = Field(default="1.0.0", description="Model version")
+    supported_formats: List[str] = Field(
+        default=["mesh"], description="Supported output formats"
+    )
+    max_resolution: int = Field(default=256, description="Maximum output resolution")
+    requires_gpu: bool = Field(default=False, description="Whether model requires GPU")
+    model_type: str = Field(
+        default="unknown", description="Type of model (diffusion, vae, etc.)"
+    )
+    parameters: Dict[str, Any] = Field(
+        default_factory=dict, description="Model-specific parameters"
+    )
 
 
 class BaseModel(ABC):
-  """
-  Abstract base class for all AI model backends in Volumatrix.
-
-  All model implementations must inherit from this class and implement
-  the required abstract methods.
-  """
-
-  def __init__(self, config: Optional[ModelConfig] = None, **kwargs):
     """
-    Initialize the model.
+    Abstract base class for all AI model backends in Volumatrix.
 
-    Args:
-        config: Model configuration
-        **kwargs: Additional initialization parameters
+    All model implementations must inherit from this class and implement
+    the required abstract methods.
     """
-    self.config = config or ModelConfig(name=self.__class__.__name__)
-    self.is_loaded = False
-    self._setup(**kwargs)
 
-  @abstractmethod
-  def _setup(self, **kwargs) -> None:
-    """
-    Setup the model (load weights, initialize components, etc.).
+    def __init__(self, config: Optional[ModelConfig] = None, **kwargs):
+        """
+        Initialize the model.
 
-    This method is called during initialization and should handle
-    all model-specific setup logic.
-    """
-    pass
+        Args:
+            config: Model configuration
+            **kwargs: Additional initialization parameters
+        """
+        self.config = config or ModelConfig(name=self.__class__.__name__)
+        self.is_loaded = False
+        self._setup(**kwargs)
 
-  @abstractmethod
-  def generate(
-      self,
-      prompt: str,
-      seed: Optional[int] = None,
-      resolution: int = 64,
-      output_format: str = "mesh",
-      **kwargs
-  ) -> VolumatrixObject:
-    """
-    Generate a 3D object from a text prompt.
+    @abstractmethod
+    def _setup(self, **kwargs) -> None:
+        """
+        Setup the model (load weights, initialize components, etc.).
 
-    Args:
-        prompt: Text description of the object to generate
-        seed: Random seed for reproducible generation
-        resolution: Output resolution for voxel-based models
-        output_format: Preferred output format ("mesh", "voxel", "pointcloud")
-        **kwargs: Additional model-specific parameters
+        This method is called during initialization and should handle
+        all model-specific setup logic.
+        """
+        pass
 
-    Returns:
-        A VolumatrixObject containing the generated 3D object
-    """
-    pass
+    @abstractmethod
+    def generate(
+        self,
+        prompt: str,
+        seed: Optional[int] = None,
+        resolution: int = 64,
+        output_format: str = "mesh",
+        **kwargs,
+    ) -> VolumatrixObject:
+        """
+        Generate a 3D object from a text prompt.
 
-  def load(self) -> None:
-    """Load the model if not already loaded."""
-    if not self.is_loaded:
-      self._load_model()
-      self.is_loaded = True
+        Args:
+            prompt: Text description of the object to generate
+            seed: Random seed for reproducible generation
+            resolution: Output resolution for voxel-based models
+            output_format: Preferred output format ("mesh", "voxel", "pointcloud")
+            **kwargs: Additional model-specific parameters
 
-  def unload(self) -> None:
-    """Unload the model to free memory."""
-    if self.is_loaded:
-      self._unload_model()
-      self.is_loaded = False
+        Returns:
+            A VolumatrixObject containing the generated 3D object
+        """
+        pass
 
-  def _load_model(self) -> None:
-    """
-    Load model weights and components.
+    def load(self) -> None:
+        """Load the model if not already loaded."""
+        if not self.is_loaded:
+            self._load_model()
+            self.is_loaded = True
 
-    Override this method to implement model loading logic.
-    """
-    pass
+    def unload(self) -> None:
+        """Unload the model to free memory."""
+        if self.is_loaded:
+            self._unload_model()
+            self.is_loaded = False
 
-  def _unload_model(self) -> None:
-    """
-    Unload model weights and components.
+    def _load_model(self) -> None:
+        """
+        Load model weights and components.
 
-    Override this method to implement model unloading logic.
-    """
-    pass
+        Override this method to implement model loading logic.
+        """
+        pass
 
-  def validate_parameters(self, **kwargs) -> Dict[str, Any]:
-    """
-    Validate and process generation parameters.
+    def _unload_model(self) -> None:
+        """
+        Unload model weights and components.
 
-    Args:
-        **kwargs: Generation parameters to validate
+        Override this method to implement model unloading logic.
+        """
+        pass
 
-    Returns:
-        Validated and processed parameters
-    """
-    validated = {}
+    def validate_parameters(self, **kwargs) -> Dict[str, Any]:
+        """
+        Validate and process generation parameters.
 
-    # Check output format
-    output_format = kwargs.get("output_format", "mesh")
-    if output_format not in self.config.supported_formats:
-      raise ValueError(
-          f"Output format '{output_format}' not supported by model '{self.config.name}'. "
-          f"Supported formats: {self.config.supported_formats}"
-      )
-    validated["output_format"] = output_format
+        Args:
+            **kwargs: Generation parameters to validate
 
-    # Check resolution
-    resolution = kwargs.get("resolution", 64)
-    if resolution > self.config.max_resolution:
-      raise ValueError(
-          f"Resolution {resolution} exceeds maximum {self.config.max_resolution} "
-          f"for model '{self.config.name}'"
-      )
-    validated["resolution"] = resolution
+        Returns:
+            Validated and processed parameters
+        """
+        validated = {}
 
-    # Add other parameters
-    for key, value in kwargs.items():
-      if key not in validated:
-        validated[key] = value
+        # Check output format
+        output_format = kwargs.get("output_format", "mesh")
+        if output_format not in self.config.supported_formats:
+            raise ValueError(
+                f"Output format '{output_format}' not supported by model '{self.config.name}'. "
+                f"Supported formats: {self.config.supported_formats}"
+            )
+        validated["output_format"] = output_format
 
-    return validated
+        # Check resolution
+        resolution = kwargs.get("resolution", 64)
+        if resolution > self.config.max_resolution:
+            raise ValueError(
+                f"Resolution {resolution} exceeds maximum {self.config.max_resolution} "
+                f"for model '{self.config.name}'"
+            )
+        validated["resolution"] = resolution
 
-  def preprocess_prompt(self, prompt: str) -> str:
-    """
-    Preprocess the input prompt.
+        # Add other parameters
+        for key, value in kwargs.items():
+            if key not in validated:
+                validated[key] = value
 
-    Override this method to implement prompt preprocessing logic
-    (e.g., cleaning, tokenization, etc.).
+        return validated
 
-    Args:
-        prompt: Raw input prompt
+    def preprocess_prompt(self, prompt: str) -> str:
+        """
+        Preprocess the input prompt.
 
-    Returns:
-        Processed prompt
-    """
-    return prompt.strip()
+        Override this method to implement prompt preprocessing logic
+        (e.g., cleaning, tokenization, etc.).
 
-  def postprocess_output(self, output: Any, **kwargs) -> VolumatrixObject:
-    """
-    Postprocess the model output into a VolumatrixObject.
+        Args:
+            prompt: Raw input prompt
 
-    Override this method to implement output postprocessing logic.
+        Returns:
+            Processed prompt
+        """
+        return prompt.strip()
 
-    Args:
-        output: Raw model output
-        **kwargs: Additional processing parameters
+    def postprocess_output(self, output: Any, **kwargs) -> VolumatrixObject:
+        """
+        Postprocess the model output into a VolumatrixObject.
 
-    Returns:
-        A VolumatrixObject containing the processed output
-    """
-    raise NotImplementedError("Subclasses must implement postprocess_output")
+        Override this method to implement output postprocessing logic.
 
-  @property
-  def name(self) -> str:
-    """Get the model name."""
-    return self.config.name
+        Args:
+            output: Raw model output
+            **kwargs: Additional processing parameters
 
-  @property
-  def description(self) -> str:
-    """Get the model description."""
-    return self.config.description
+        Returns:
+            A VolumatrixObject containing the processed output
+        """
+        raise NotImplementedError("Subclasses must implement postprocess_output")
 
-  @property
-  def version(self) -> str:
-    """Get the model version."""
-    return self.config.version
+    @property
+    def name(self) -> str:
+        """Get the model name."""
+        return self.config.name
 
-  @property
-  def supported_formats(self) -> List[str]:
-    """Get the supported output formats."""
-    return self.config.supported_formats
+    @property
+    def description(self) -> str:
+        """Get the model description."""
+        return self.config.description
 
-  def get_info(self) -> Dict[str, Any]:
-    """Get comprehensive model information."""
-    return {
-        "name": self.name,
-        "description": self.description,
-        "version": self.version,
-        "supported_formats": self.supported_formats,
-        "max_resolution": self.config.max_resolution,
-        "requires_gpu": self.config.requires_gpu,
-        "model_type": self.config.model_type,
-        "is_loaded": self.is_loaded,
-        "parameters": self.config.parameters
-    }
+    @property
+    def version(self) -> str:
+        """Get the model version."""
+        return self.config.version
 
-  def __str__(self) -> str:
-    """String representation of the model."""
-    return f"{self.config.name} v{self.config.version} ({self.config.model_type})"
+    @property
+    def supported_formats(self) -> List[str]:
+        """Get the supported output formats."""
+        return self.config.supported_formats
 
-  def __repr__(self) -> str:
-    """Detailed representation of the model."""
-    return (
-        f"{self.__class__.__name__}("
-        f"name='{self.config.name}', "
-        f"version='{self.config.version}', "
-        f"loaded={self.is_loaded})"
-    )
+    def get_info(self) -> Dict[str, Any]:
+        """Get comprehensive model information."""
+        return {
+            "name": self.name,
+            "description": self.description,
+            "version": self.version,
+            "supported_formats": self.supported_formats,
+            "max_resolution": self.config.max_resolution,
+            "requires_gpu": self.config.requires_gpu,
+            "model_type": self.config.model_type,
+            "is_loaded": self.is_loaded,
+            "parameters": self.config.parameters,
+        }
+
+    def __str__(self) -> str:
+        """String representation of the model."""
+        return f"{self.config.name} v{self.config.version} ({self.config.model_type})"
+
+    def __repr__(self) -> str:
+        """Detailed representation of the model."""
+        return (
+            f"{self.__class__.__name__}("
+            f"name='{self.config.name}', "
+            f"version='{self.config.version}', "
+            f"loaded={self.is_loaded})"
+        )

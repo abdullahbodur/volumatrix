@@ -2,100 +2,89 @@
 """
 Run All Examples
 
-This script runs all Volumatrix examples in sequence. Useful for testing
-and demonstrating the full capabilities of the library.
+This script runs all Volumatrix examples and reports their status.
 """
 
-import sys
+import importlib
+import os
 import time
-import importlib.util
 from pathlib import Path
+
+from logger import setup_logger
+
+log = setup_logger(__name__)
 
 
 def run_example(example_path):
-  """Run a single example and return success status."""
-  print(f"\n{'=' * 60}")
-  print(f"Running: {example_path.name}")
-  print(f"{'=' * 60}")
+    """Run a single example and return its status."""
+    try:
+        log.info(f"{'=' * 60}")
+        log.info(f"Running: {example_path.name}")
+        log.info(f"{'=' * 60}")
 
-  try:
-    # Load and execute the example module
-    spec = importlib.util.spec_from_file_location("example", example_path)
-    module = importlib.util.module_from_spec(spec)
+        # Import and run the example
+        module_name = f"examples.{example_path.stem}"
+        module = importlib.import_module(module_name)
 
-    start_time = time.time()
-    spec.loader.exec_module(module)
-    end_time = time.time()
+        start_time = time.time()
+        module.main()
+        end_time = time.time()
 
-    print(
-      f"\n{example_path.name} completed successfully in {end_time - start_time:.2f}s")
-    return True
+        return {
+            "name": example_path.name,
+            "status": "success",
+            "time": end_time - start_time,
+        }
 
-  except Exception as e:
-    print(f"\n{example_path.name} failed with error: {e}")
-    return False
+    except Exception as e:
+        log.error(f"{example_path.name} failed with error: {e}")
+        return {"name": example_path.name, "status": "failed", "error": str(e)}
 
 
 def main():
-  """Run all examples in the examples directory."""
-  print("Volumatrix - Running All Examples")
-  print("=" * 60)
+    """Run all examples and report results."""
+    log.info("Volumatrix - Running All Examples")
+    log.info("=" * 60)
 
-  # Get the examples directory
-  examples_dir = Path(__file__).parent
+    # Get all example files
+    examples_dir = Path(__file__).parent
+    example_files = sorted(
+        [
+            f
+            for f in examples_dir.glob("*.py")
+            if f.stem not in ["__init__", "run_all_examples", "log"]
+        ]
+    )
 
-  # Define the order of examples (recommended learning path)
-  example_order = [
-      "basic_generation.py",
-      "transformations.py",
-      "conversions.py",
-      "scene_management.py",
-      "export_formats.py",
-      "batch_processing.py",
-      "interactive_visualization.py"
-  ]
+    # Run each example
+    results = []
+    for example_file in example_files:
+        result = run_example(example_file)
+        results.append(result)
 
-  # Track results
-  results = {}
-  total_start_time = time.time()
+    # Print summary
+    log.info(f"{'=' * 60}")
+    log.info("SUMMARY")
+    log.info(f"{'=' * 60}")
 
-  # Run each example
-  for example_name in example_order:
-    example_path = examples_dir / example_name
+    successful = sum(1 for r in results if r["status"] == "success")
+    total = len(results)
+    total_time = sum(r.get("time", 0) for r in results)
 
-    if example_path.exists():
-      success = run_example(example_path)
-      results[example_name] = success
+    log.info(f"Successful: {successful}/{total}")
+    log.info(f"Total time: {total_time:.2f} seconds")
+    log.info(f"Success rate: {successful / total * 100:.1f}%")
+
+    log.info(f"Detailed Results:")
+    for result in results:
+        status = "✓" if result["status"] == "success" else "✗"
+        log.info(f"   {status} {result['name']}")
+
+    if successful == total:
+        log.info(f"All examples completed successfully!")
     else:
-      print(f"Example not found: {example_name}")
-      results[example_name] = False
-
-  total_end_time = time.time()
-  total_time = total_end_time - total_start_time
-
-  # Print summary
-  print(f"\n{'=' * 60}")
-  print("SUMMARY")
-  print(f"{'=' * 60}")
-
-  successful = sum(results.values())
-  total = len(results)
-
-  print(f"Successful: {successful}/{total}")
-  print(f"Total time: {total_time:.2f} seconds")
-  print(f"Success rate: {successful / total * 100:.1f}%")
-
-  print(f"\nDetailed Results:")
-  for example_name, success in results.items():
-    status = "PASS" if success else "FAIL"
-    print(f"   {status} {example_name}")
-
-  if successful == total:
-    print(f"\nAll examples completed successfully!")
-  else:
-    print(f"\nSome examples failed. Check the error messages above.")
-    sys.exit(1)
+        log.info(f"Some examples failed. Check the error messages above.")
 
 
 if __name__ == "__main__":
-  main()
+    main()
